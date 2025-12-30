@@ -1,0 +1,35 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# C++ and executables
+*.exe
+*.obj
+*.o
+*.dll
+*.so
+*.dylib
+
+# Build folders
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# App specific
+ocr/ocr_cache/
+settings.json
+*.bin
+*.onnx
+
+# Ignore models due to large size (use GitHub Releases or Git LFS instead)
+translator/core/translator_model/model.bin
+
+# Ignore massive virtual environment folders
+SETJA/
