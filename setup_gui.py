@@ -67,8 +67,8 @@ class SetupGUI(tk.Tk):
             if isinstance(widget, tk.LabelFrame):
                 for child in widget.winfo_children():
                     try:
-                        child.config(state="disabled")
-                    except tk.TclError:
+                        child["state"] = "disabled"
+                    except Exception:
                         pass
                     
         threading.Thread(target=self.install_process, daemon=True).start()
