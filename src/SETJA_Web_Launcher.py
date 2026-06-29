@@ -80,6 +80,12 @@ class Api:
         self.processes = []
         return True
 
+    def minimize(self):
+        webview.windows[0].minimize()
+
+    def close_app(self):
+        webview.windows[0].destroy()
+
 def get_entrypoint():
     if getattr(sys, 'frozen', False):
         return os.path.join(sys._MEIPASS, 'web', 'index.html')
@@ -91,9 +97,10 @@ if __name__ == '__main__':
         'SETJA Control Panel - CEO Edition', 
         url=get_entrypoint(),
         js_api=api,
-        width=650, 
-        height=550,
-        resizable=False,
-        frameless=False
+        width=700, 
+        height=680,
+        resizable=True,
+        frameless=True,
+        easy_drag=False
     )
     webview.start(http_server=True)
