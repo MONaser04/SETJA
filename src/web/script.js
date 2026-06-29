@@ -10,20 +10,9 @@ const startBtn = document.getElementById('startBtn');
 const startBtnText = startBtn.querySelector('.btn-text');
 const spinner = startBtn.querySelector('.spinner');
 const toast = document.getElementById('toast');
-const minBtn = document.getElementById('minBtn');
-const closeBtn = document.getElementById('closeBtn');
 
 let isRunning = false;
 let toastTimeout;
-
-// Titlebar Controls
-minBtn.addEventListener('click', () => {
-    if (window.pywebview) pywebview.api.minimize();
-});
-
-closeBtn.addEventListener('click', () => {
-    if (window.pywebview) pywebview.api.close_app();
-});
 
 // Initialize when pywebview is ready
 window.addEventListener('pywebviewready', function() {

@@ -113,13 +113,12 @@ def get_entrypoint():
 if __name__ == '__main__':
     api = Api()
     webview.create_window(
-        'SETJA Control Panel', 
+        'SETJA - CEO Edition', 
         url=get_entrypoint(),
         js_api=api,
         width=750, 
-        height=750,
-        resizable=False,
-        frameless=True,
-        easy_drag=False
+        height=850,
+        resizable=True,
+        frameless=False
     )
     webview.start(http_server=True)

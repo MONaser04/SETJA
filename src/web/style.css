@@ -28,10 +28,12 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    align-items: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
-    padding-top: 40px; /* Space for titlebar */
+    padding-top: 60px;
+    padding-bottom: 40px;
 }
 
 /* Background animated blobs */
