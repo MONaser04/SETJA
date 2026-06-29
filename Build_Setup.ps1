@@ -5,15 +5,23 @@ Write-Host " SETJA Installer Compiler (.EXE Builder)" -ForegroundColor Cyan
 Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host ""
 
-$iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+$iscc_global = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+$iscc_local = "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe"
 
-if (-not (Test-Path $iscc)) {
+$iscc = ""
+if (Test-Path $iscc_global) { $iscc = $iscc_global }
+elseif (Test-Path $iscc_local) { $iscc = $iscc_local }
+
+if (-not $iscc) {
     Write-Host "Inno Setup is not installed. Downloading and installing Inno Setup Compiler..." -ForegroundColor Yellow
     Write-Host "Please wait..."
     winget install -e --id JRSoftware.InnoSetup --silent --accept-package-agreements --accept-source-agreements
+    
+    if (Test-Path $iscc_global) { $iscc = $iscc_global }
+    elseif (Test-Path $iscc_local) { $iscc = $iscc_local }
 }
 
-if (-not (Test-Path $iscc)) {
+if (-not $iscc) {
     Write-Host ""
     Write-Host "[ERROR] Failed to find Inno Setup compiler." -ForegroundColor Red
     Write-Host "Please install it manually from https://jrsoftware.org/isinfo.php" -ForegroundColor Red
