@@ -9,15 +9,21 @@ import webview
 class Api:
     def __init__(self):
         self.root_dir = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.src_dir = os.path.join(self.root_dir, "src") if not getattr(sys, 'frozen', False) else os.path.join(self.root_dir, "_internal", "src")
-        # In PyInstaller, the web files are extracted to sys._MEIPASS
+        self.src_dir = os.path.join(self.root_dir, "src")
         self.settings_path = os.path.join(self.root_dir, "settings.json")
-        self.py_exe = os.path.join(self.root_dir, "setja_stable", "Scripts", "python.exe")
+        py_exe_scripts = os.path.join(self.root_dir, "setja_stable", "Scripts", "python.exe")
+        py_exe_bin = os.path.join(self.root_dir, "setja_stable", "bin", "python.exe")
+        self.py_exe = py_exe_scripts if os.path.exists(py_exe_scripts) else py_exe_bin
         self.processes = []
 
         # Ensure settings exist
         if not os.path.exists(self.settings_path):
-            self.save_settings({"engine": "offline", "api_key": ""})
+            self.save_settings({
+                "engine": "offline", 
+                "api_key": "",
+                "api_url": "",
+                "api_model": ""
+            })
 
     def get_settings(self):
         try:
@@ -54,17 +60,30 @@ class Api:
 
     def start_setja(self):
         if not os.path.exists(self.py_exe):
+            print("Python executable not found at:", self.py_exe)
             return False
 
         try:
             # Start processes silently
             flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+            env = os.environ.copy()
+            env["PYTHONPATH"] = self.src_dir
             
-            scripts = ["capture/main.py", "ocr/main.py", "translator/main.py", "bridge/main.py", "txt_viewer/main.py"]
-            for script in scripts:
-                script_path = os.path.join(self.src_dir, script.replace('/', os.sep))
-                p = subprocess.Popen([self.py_exe, script_path], cwd=self.root_dir, creationflags=flags)
-                self.processes.append(p)
+            cmds = [
+                {"cmd": ["cmd", "/c", "run_selector.cmd"], "cwd": os.path.join(self.src_dir, "capture", "region_selector")},
+                {"cmd": [os.path.join(self.src_dir, "capture", "screen_capture", "app", "screen_capture.exe")], "cwd": self.src_dir},
+                {"cmd": [self.py_exe, "-u", os.path.join(self.src_dir, "ocr", "app", "ocr_main.py")], "cwd": self.src_dir},
+                {"cmd": [self.py_exe, "-u", "-m", "app.t_main"], "cwd": os.path.join(self.src_dir, "translator")},
+                {"cmd": [self.py_exe, "-u", "txt_viewer.py"], "cwd": os.path.join(self.src_dir, "txt_viewer")},
+                {"cmd": [self.py_exe, "-u", "instant_overlay.py"], "cwd": os.path.join(self.src_dir, "txt_viewer")}
+            ]
+            
+            for c in cmds:
+                try:
+                    p = subprocess.Popen(c["cmd"], cwd=c["cwd"], env=env, creationflags=flags)
+                    self.processes.append(p)
+                except Exception as e:
+                    print(f"Failed to start {c['cmd']}: {e}")
             return True
         except Exception as e:
             print(f"Failed to start SETJA: {e}")

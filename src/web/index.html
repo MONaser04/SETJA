@@ -46,7 +46,13 @@
                 </div>
 
                 <div id="apiKeyContainer" class="hidden">
-                    <label for="apiKeyInput">Cloud API Key:</label>
+                    <label for="apiURLInput">API Base URL (Optional for Cloud):</label>
+                    <input type="text" id="apiURLInput" class="glass-input" placeholder="e.g. https://api.groq.com/v1">
+                    
+                    <label for="apiModelInput">Model Name:</label>
+                    <input type="text" id="apiModelInput" class="glass-input" placeholder="e.g. llama3-70b-8192">
+                    
+                    <label for="apiKeyInput">API Key:</label>
                     <input type="text" id="apiKeyInput" class="glass-input" placeholder="Enter your API key here...">
                 </div>
             </section>

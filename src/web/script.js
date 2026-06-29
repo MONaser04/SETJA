@@ -2,6 +2,8 @@
 const engineOffline = document.getElementById('engineOffline');
 const engineGemini = document.getElementById('engineGemini');
 const apiKeyContainer = document.getElementById('apiKeyContainer');
+const apiURLInput = document.getElementById('apiURLInput');
+const apiModelInput = document.getElementById('apiModelInput');
 const apiKeyInput = document.getElementById('apiKeyInput');
 const browseModelBtn = document.getElementById('browseModelBtn');
 const startBtn = document.getElementById('startBtn');
@@ -36,6 +38,12 @@ window.addEventListener('pywebviewready', function() {
         if (settings.api_key) {
             apiKeyInput.value = settings.api_key;
         }
+        if (settings.api_url) {
+            apiURLInput.value = settings.api_url;
+        }
+        if (settings.api_model) {
+            apiModelInput.value = settings.api_model;
+        }
     });
 });
 
@@ -58,6 +66,16 @@ apiKeyInput.addEventListener('input', () => {
     window.saveTimeout = setTimeout(saveSettings, 500);
 });
 
+apiURLInput.addEventListener('input', () => {
+    clearTimeout(window.saveTimeout);
+    window.saveTimeout = setTimeout(saveSettings, 500);
+});
+
+apiModelInput.addEventListener('input', () => {
+    clearTimeout(window.saveTimeout);
+    window.saveTimeout = setTimeout(saveSettings, 500);
+});
+
 browseModelBtn.addEventListener('click', async () => {
     const result = await pywebview.api.install_model();
     if (result.success) {
@@ -68,6 +86,14 @@ browseModelBtn.addEventListener('click', async () => {
 });
 
 startBtn.addEventListener('click', async () => {
+    // Validate
+    const engine = engineGemini.checked ? 'gemini' : 'offline';
+    const apiKey = apiKeyInput.value.trim();
+    if (engine === 'gemini' && !apiKey) {
+        showToast("Please enter your Cloud API Key first!", true);
+        return;
+    }
+
     // Save settings before starting
     saveSettings();
     
@@ -107,7 +133,9 @@ startBtn.addEventListener('click', async () => {
 function saveSettings() {
     const settings = {
         engine: engineGemini.checked ? 'gemini' : 'offline',
-        api_key: apiKeyInput.value.trim()
+        api_key: apiKeyInput.value.trim(),
+        api_url: apiURLInput.value.trim(),
+        api_model: apiModelInput.value.trim()
     };
     if (window.pywebview) {
         pywebview.api.save_settings(settings);
