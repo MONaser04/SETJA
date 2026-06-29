@@ -29,6 +29,18 @@ def _run_background(args: list, cwd: Path):
     _processes.append(p)
 
 
+import json
+
+def is_offline_enabled():
+    try:
+        settings_path = ROOT / "settings.json"
+        if settings_path.exists():
+            with open(settings_path, "r", encoding="utf-8") as f:
+                return json.load(f).get("enable_offline", True)
+    except Exception:
+        pass
+    return True
+
 def main():
     # 1) Capture (C++ executables)
     _run_background(["cmd.exe", "/c", "call", str(CAPTURE_CMD)], CAPTURE_CMD.parent)
@@ -36,14 +48,15 @@ def main():
     # 2) OCR
     _run_background([PYTHON, "-u", str(OCR_PY)], ROOT)
 
-    # 3) Translator
-    _run_background([PYTHON, "-u", "-m", "app.t_main"], TRANSLATOR_DIR)
+    ports_to_wait = [("OCR", "127.0.0.1", 15188)]
+
+    # 3) Translator (Only if enabled)
+    if is_offline_enabled():
+        _run_background([PYTHON, "-u", "-m", "app.t_main"], TRANSLATOR_DIR)
+        ports_to_wait.append(("Translator", "127.0.0.1", 15199))
 
     wait_for_ports(
-        [
-            ("OCR", "127.0.0.1", 15188),
-            ("Translator", "127.0.0.1", 15199),
-        ],
+        ports_to_wait,
         label="[WAIT]",
         check_interval=0.4,
     )

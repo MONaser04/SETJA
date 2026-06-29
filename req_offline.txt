@@ -1,0 +1,8 @@
+ctranslate2==4.7.1
+huggingface_hub==1.4.1
+modelscope==1.34.0
+sacremoses==0.1.1
+safetensors==0.7.0
+sentencepiece==0.2.1
+tokenizers==0.22.2
+transformers==5.1.0
