@@ -4,29 +4,19 @@ import json
 import subprocess
 import threading
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+from tkinter import filedialog, messagebox
 import shutil
+import customtkinter as ctk
 
-class SetjaControlPanel(tk.Tk):
+# Set modern appearance
+ctk.set_appearance_mode("Dark")
+ctk.set_default_color_theme("blue")
+
+class SetjaControlPanel(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("SETJA Control Panel - CEO Edition")
-        self.geometry("600x500")
-        self.configure(bg="#1e1e2e")
-        self.style = ttk.Style(self)
-        self.style.theme_use("clam")
-        
-        # Colors
-        self.bg_color = "#1e1e2e"
-        self.fg_color = "#cdd6f4"
-        self.accent_color = "#89b4fa"
-        self.btn_color = "#313244"
-        
-        self.style.configure("TFrame", background=self.bg_color)
-        self.style.configure("TLabel", background=self.bg_color, foreground=self.fg_color, font=("Segoe UI", 10))
-        self.style.configure("TButton", background=self.btn_color, foreground=self.fg_color, font=("Segoe UI", 10, "bold"), borderwidth=0)
-        self.style.map("TButton", background=[("active", self.accent_color)])
-        self.style.configure("TRadiobutton", background=self.bg_color, foreground=self.fg_color, font=("Segoe UI", 10))
+        self.geometry("650x550")
         
         self.processes = []
         self.is_running = False
@@ -56,47 +46,60 @@ class SetjaControlPanel(tk.Tk):
             messagebox.showerror("Error", f"Failed to save settings: {e}")
 
     def build_ui(self):
-        main_frame = ttk.Frame(self, padding=20)
-        main_frame.pack(fill=tk.BOTH, expand=True)
-        
         # Header
-        header = tk.Label(main_frame, text="SETJA - Advanced Screen Translator", bg=self.bg_color, fg=self.accent_color, font=("Segoe UI", 16, "bold"))
-        header.pack(pady=(0, 20))
+        self.header_label = ctk.CTkLabel(self, text="SETJA Advanced Screen Translator", font=ctk.CTkFont(size=24, weight="bold"))
+        self.header_label.pack(pady=(20, 10))
+        self.sub_label = ctk.CTkLabel(self, text="Manage Translation Engines and Models", font=ctk.CTkFont(size=14), text_color="gray")
+        self.sub_label.pack(pady=(0, 20))
         
-        # Engine Selection
-        engine_frame = ttk.LabelFrame(main_frame, text=" Translation Engine ", padding=15)
-        engine_frame.pack(fill=tk.X, pady=10)
+        # Engine Frame
+        self.engine_frame = ctk.CTkFrame(self)
+        self.engine_frame.pack(fill="x", padx=20, pady=10)
         
-        self.engine_var = tk.StringVar(value=self.settings.get("engine", "offline"))
-        r1 = ttk.Radiobutton(engine_frame, text="Offline (Local AI Models - Strict Privacy)", variable=self.engine_var, value="offline", command=self.on_engine_change)
-        r1.pack(anchor=tk.W, pady=2)
-        r2 = ttk.Radiobutton(engine_frame, text="Online (Gemini API - High Speed)", variable=self.engine_var, value="gemini", command=self.on_engine_change)
-        r2.pack(anchor=tk.W, pady=2)
+        self.engine_label = ctk.CTkLabel(self.engine_frame, text="Translation Engine", font=ctk.CTkFont(size=16, weight="bold"))
+        self.engine_label.pack(anchor="w", padx=20, pady=(15, 5))
         
-        # API Key
-        self.api_frame = ttk.Frame(engine_frame)
-        ttk.Label(self.api_frame, text="Gemini API Key:").pack(side=tk.LEFT, padx=(0, 10))
-        self.api_entry = ttk.Entry(self.api_frame, width=40)
-        self.api_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.engine_var = ctk.StringVar(value=self.settings.get("engine", "offline"))
+        
+        self.radio_offline = ctk.CTkRadioButton(self.engine_frame, text="Offline (Local AI Models - Strict Privacy)", variable=self.engine_var, value="offline", command=self.on_engine_change)
+        self.radio_offline.pack(anchor="w", padx=30, pady=5)
+        
+        self.radio_online = ctk.CTkRadioButton(self.engine_frame, text="Online (Gemini API - High Speed)", variable=self.engine_var, value="gemini", command=self.on_engine_change)
+        self.radio_online.pack(anchor="w", padx=30, pady=5)
+        
+        # API Key Frame
+        self.api_frame = ctk.CTkFrame(self.engine_frame, fg_color="transparent")
+        
+        self.api_label = ctk.CTkLabel(self.api_frame, text="Gemini API Key:")
+        self.api_label.pack(side="left", padx=(30, 10))
+        
+        self.api_entry = ctk.CTkEntry(self.api_frame, width=300, placeholder_text="Enter your API key here...")
+        self.api_entry.pack(side="left", fill="x", expand=True, padx=(0, 30))
         self.api_entry.insert(0, self.settings.get("api_key", ""))
         
         if self.engine_var.get() == "gemini":
-            self.api_frame.pack(fill=tk.X, pady=10)
+            self.api_frame.pack(fill="x", pady=10)
             
-        # Model Installer
-        model_frame = ttk.LabelFrame(main_frame, text=" Model Management ", padding=15)
-        model_frame.pack(fill=tk.X, pady=10)
+        # Model Management Frame
+        self.model_frame = ctk.CTkFrame(self)
+        self.model_frame.pack(fill="x", padx=20, pady=10)
         
-        ttk.Label(model_frame, text="Want to use a custom CTranslate2 model?").pack(side=tk.LEFT)
-        ttk.Button(model_frame, text="Browse & Install Model", command=self.install_model).pack(side=tk.RIGHT)
+        self.model_label = ctk.CTkLabel(self.model_frame, text="Model Management", font=ctk.CTkFont(size=16, weight="bold"))
+        self.model_label.pack(anchor="w", padx=20, pady=(15, 5))
         
-        # Start/Stop Button
-        self.start_btn = tk.Button(main_frame, text="START SETJA", bg="#a6e3a1", fg="#11111b", font=("Segoe UI", 14, "bold"), borderwidth=0, cursor="hand2", command=self.toggle_setja)
-        self.start_btn.pack(fill=tk.X, pady=30, ipady=10)
+        self.model_sub_label = ctk.CTkLabel(self.model_frame, text="Want to use a custom CTranslate2 model?")
+        self.model_sub_label.pack(side="left", padx=30, pady=15)
+        
+        self.install_btn = ctk.CTkButton(self.model_frame, text="Browse & Install Model", command=self.install_model)
+        self.install_btn.pack(side="right", padx=30, pady=15)
+        
+        # Start Button
+        self.start_btn = ctk.CTkButton(self, text="START SETJA", font=ctk.CTkFont(size=18, weight="bold"), height=50, fg_color="#2ecc71", hover_color="#27ae60", text_color="white", command=self.toggle_setja)
+        self.start_btn.pack(fill="x", padx=20, pady=(30, 20))
         
     def on_engine_change(self):
         if self.engine_var.get() == "gemini":
-            self.api_frame.pack(fill=tk.X, pady=10)
+            self.api_frame.pack(fill="x", pady=10)
         else:
             self.api_frame.pack_forget()
             
@@ -120,15 +123,15 @@ class SetjaControlPanel(tk.Tk):
             self.save_settings()
             
             if not os.path.exists(self.py_exe):
-                messagebox.showerror("Error", f"Python environment not found at: {self.py_exe}\nPlease run Setup first.")
+                messagebox.showerror("Error", f"Python environment not found at:\n{self.py_exe}\n\nPlease run Setup first.")
                 return
                 
-            self.start_btn.config(text="STOP SETJA", bg="#f38ba8")
+            self.start_btn.configure(text="STOP SETJA", fg_color="#e74c3c", hover_color="#c0392b")
             self.is_running = True
             threading.Thread(target=self.run_processes, daemon=True).start()
         else:
             self.stop_processes()
-            self.start_btn.config(text="START SETJA", bg="#a6e3a1")
+            self.start_btn.configure(text="START SETJA", fg_color="#2ecc71", hover_color="#27ae60")
             self.is_running = False
             
     def run_processes(self):
@@ -136,17 +139,11 @@ class SetjaControlPanel(tk.Tk):
         env["PYTHONPATH"] = self.src_dir
         
         cmds = [
-            # Region Selector
             {"cmd": ["cmd", "/c", "run_selector.cmd"], "cwd": os.path.join(self.src_dir, "capture", "region_selector")},
-            # Screen Capture EXE
             {"cmd": [os.path.join(self.src_dir, "capture", "screen_capture", "app", "screen_capture.exe")], "cwd": self.src_dir},
-            # OCR
             {"cmd": [self.py_exe, "-u", os.path.join(self.src_dir, "ocr", "app", "ocr_main.py")], "cwd": self.src_dir},
-            # Translator
             {"cmd": [self.py_exe, "-u", "-m", "app.t_main"], "cwd": os.path.join(self.src_dir, "translator")},
-            # TXT Viewer Base
             {"cmd": [self.py_exe, "-u", "txt_viewer.py"], "cwd": os.path.join(self.src_dir, "txt_viewer")},
-            # TXT Viewer Overlay
             {"cmd": [self.py_exe, "-u", "instant_overlay.py"], "cwd": os.path.join(self.src_dir, "txt_viewer")}
         ]
         
