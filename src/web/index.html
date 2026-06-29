@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SETJA Control Panel - CEO Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="container glass-panel">
+        <header>
+            <h1 class="gradient-text">SETJA</h1>
+            <h2>Advanced Screen Translator</h2>
+            <p>Manage Translation Engines and Models</p>
+        </header>
+
+        <main>
+            <section class="card glass-panel">
+                <h3>Translation Engine</h3>
+                <div class="radio-group">
+                    <label class="radio-container">
+                        <input type="radio" name="engine" value="offline" id="engineOffline" checked>
+                        <span class="checkmark"></span>
+                        <span class="label-text">Offline (Local AI Models - Strict Privacy)</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="engine" value="gemini" id="engineGemini">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Online (Gemini API - High Speed)</span>
+                    </label>
+                </div>
+
+                <div id="apiKeyContainer" class="hidden">
+                    <label for="apiKeyInput">Gemini API Key:</label>
+                    <input type="text" id="apiKeyInput" class="glass-input" placeholder="Enter your API key here...">
+                </div>
+            </section>
+
+            <section class="card glass-panel">
+                <h3>Model Management</h3>
+                <div class="model-row">
+                    <p>Want to use a custom CTranslate2 model?</p>
+                    <button id="browseModelBtn" class="btn secondary-btn">Browse & Install Model</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <button id="startBtn" class="btn primary-btn">
+                <span class="btn-text">START SETJA</span>
+                <div class="spinner hidden"></div>
+            </button>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
