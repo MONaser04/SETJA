@@ -8,7 +8,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Titlebar removed in favor of native OS window controls -->    <!-- Animated Background -->
+    <!-- Custom Transparent Titlebar -->
+    <div class="titlebar pywebview-drag-region">
+        <div class="titlebar-title">SETJA</div>
+        <div class="titlebar-controls">
+            <button id="minBtn" class="control-btn minimize">_</button>
+            <button id="maxBtn" class="control-btn maximize">□</button>
+            <button id="closeBtn" class="control-btn close">✕</button>
+        </div>
+    </div>
+    <!-- Animated Background -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>

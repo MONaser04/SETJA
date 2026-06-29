@@ -105,6 +105,9 @@ class Api:
     def close_app(self):
         webview.windows[0].destroy()
 
+    def toggle_maximize(self):
+        webview.windows[0].toggle_fullscreen()
+
 def get_entrypoint():
     if getattr(sys, 'frozen', False):
         return os.path.join(sys._MEIPASS, 'web', 'index.html')
@@ -113,12 +116,14 @@ def get_entrypoint():
 if __name__ == '__main__':
     api = Api()
     webview.create_window(
-        'SETJA - CEO Edition', 
+        'SETJA', 
         url=get_entrypoint(),
         js_api=api,
         width=750, 
         height=850,
         resizable=True,
-        frameless=False
+        frameless=True,
+        easy_drag=False,
+        background_color='#0b0f19'
     )
     webview.start(http_server=True)
