@@ -29,8 +29,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     position: relative;
     padding-top: 40px; /* Space for titlebar */
 }

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SETJA Control Panel - CEO Edition</title>
+    <title>SETJA Control Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Custom Frameless Titlebar -->
     <div class="titlebar pywebview-drag-region">
-        <div class="titlebar-title">SETJA - CEO Edition</div>
+        <div class="titlebar-title">SETJA Control Panel</div>
         <div class="titlebar-controls">
             <button id="minBtn" class="control-btn minimize">_</button>
             <button id="closeBtn" class="control-btn close">✕</button>
@@ -41,12 +41,12 @@
                     <label class="radio-container">
                         <input type="radio" name="engine" value="gemini" id="engineGemini">
                         <span class="checkmark"></span>
-                        <span class="label-text">Online (Gemini API - High Speed)</span>
+                        <span class="label-text">Online (Cloud API - High Speed)</span>
                     </label>
                 </div>
 
                 <div id="apiKeyContainer" class="hidden">
-                    <label for="apiKeyInput">Gemini API Key:</label>
+                    <label for="apiKeyInput">Cloud API Key:</label>
                     <input type="text" id="apiKeyInput" class="glass-input" placeholder="Enter your API key here...">
                 </div>
             </section>
@@ -54,7 +54,7 @@
             <section class="card glass-panel">
                 <h3>Model Management</h3>
                 <div class="model-row">
-                    <p>Want to use a custom CTranslate2 model?</p>
+                    <p>Want to use a custom translation model?</p>
                     <button id="browseModelBtn" class="btn secondary-btn">Browse & Install Model</button>
                 </div>
             </section>
