@@ -29,8 +29,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: ".git\*, setja_stable\*, venv\*, __pycache__\*, *.iss, Build_Setup.ps1, SETJA_Setup_*.exe"
 
 [Icons]
-Name: "{group}\SETJA"; Filename: "{app}\main.cmd"
-Name: "{autodesktop}\SETJA"; Filename: "{app}\main.cmd"; Tasks: desktopicon
+Name: "{group}\SETJA"; Filename: "{app}\SETJA.exe"
+Name: "{autodesktop}\SETJA"; Filename: "{app}\SETJA.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\post_install.bat"; Parameters: "full"; Components: local_models; Flags: waituntilterminated runascurrentuser shellexec
